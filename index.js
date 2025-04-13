@@ -1,5 +1,7 @@
 const express = require('express');
 const axios = require('axios');
+const { toUrlFriendlyName } = require('./utils/nameUtils');
+const { fetchAndPopulateTemplate } = require('./utils/templateUtils');
 
 const app = express();
 
@@ -34,6 +36,51 @@ app.get('/api/users', async (req, res) => {
     res.json(response.data.slice(0, 5)); // Return first 5 users
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+// People route with name parameter
+app.get('/people/:name', async (req, res) => {
+  try {
+    const urlName = req.params.name.toLowerCase();
+    const response = await axios.get('https://jsonplaceholder.typicode.com/users');
+    
+    // Find matching user
+    const user = response.data.find(user => 
+      toUrlFriendlyName(user.name) === urlName
+    );
+
+    if (!user) {
+      return res.status(404).send(`
+        <!DOCTYPE html>
+        <html>
+          <head><title>User Not Found</title></head>
+          <body>
+            <h1>User Not Found</h1>
+            <p>Sorry, we couldn't find a user with that name.</p>
+            <a href="/">Back to Home</a>
+          </body>
+        </html>
+      `);
+    }
+
+    // Fetch and populate template
+    const templateUrl = 'https://main--unch-providers--herodigital.aem.live/people/template';
+    const html = await fetchAndPopulateTemplate(templateUrl, { user });
+    res.send(html);
+
+  } catch (error) {
+    res.status(500).send(`
+      <!DOCTYPE html>
+      <html>
+        <head><title>Error</title></head>
+        <body>
+          <h1>Error</h1>
+          <p>Sorry, something went wrong: ${error.message}</p>
+          <a href="/">Back to Home</a>
+        </body>
+      </html>
+    `);
   }
 });
 
