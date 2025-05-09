@@ -3,6 +3,9 @@ const axios = require('axios');
 const { toUrlFriendlyName } = require('./utils/nameUtils');
 const { fetchAndPopulateTemplate } = require('./utils/templateUtils');
 
+const azureUserApiCode = process.env.AZURE_USER_API_CODE || '';
+const azureUserApiUrl = `${process.env.AZURE_USER_API_URL || ''}${azureUserApiCode ? `?code=${azureUserApiCode}` : ''}`;
+
 const app = express();
 
 // Middleware
@@ -28,6 +31,8 @@ app.get('/', (req, res) => {
   `);
 });
 
+
+
 // Sample API route
 app.get('/api/users', async (req, res) => {
   try {
@@ -41,14 +46,20 @@ app.get('/api/users', async (req, res) => {
 
 // People route with name parameter
 app.get('/people/:name', async (req, res) => {
+  
   try {
     const urlName = req.params.name.toLowerCase();
-    const response = await axios.get('https://jsonplaceholder.typicode.com/users');
     
-    // Find matching user
-    const user = response.data.find(user => 
-      toUrlFriendlyName(user.name) === urlName
-    );
+    const apiUrl = new URL(azureUserApiUrl);
+    apiUrl.searchParams.append('slug', urlName);
+
+    console.log('azureUserApiUrl', apiUrl.toString());
+
+    const response = await axios.get(apiUrl.toString());
+    
+    console.log('API Response:', response.data);
+
+    const user = response.data;
 
     if (!user) {
       return res.status(404).send(`
