@@ -52,7 +52,7 @@ app.get('/people/:name', async (req, res) => {
 
     // If the name is 'template', return a 404 since this comes from the base content source.
     if (urlName === 'template') {
-      return res.status(404);
+      return res.status(404).send('Not Found');
     }
     
     const apiUrl = new URL(azureUserApiUrl);
