@@ -50,9 +50,13 @@ app.get('/people/:name', async (req, res) => {
   try {
     const urlName = req.params.name.toLowerCase();
 
+    console.log('urlName', urlName);
     // If the name is 'template', return a 404 since this comes from the base content source.
     if (urlName === 'template') {
+      console.log('this is the template, returning 404.');
       return res.status(404).send('Not Found');
+    } else {
+      console.log('proceesing with fetching user data.');
     }
     
     const apiUrl = new URL(azureUserApiUrl);
