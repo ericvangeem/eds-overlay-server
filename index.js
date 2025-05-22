@@ -49,6 +49,11 @@ app.get('/people/:name', async (req, res) => {
   
   try {
     const urlName = req.params.name.toLowerCase();
+
+    // If the name is 'template', return a 404 since this comes from the base content source.
+    if (urlName === 'template') {
+      return res.status(404);
+    }
     
     const apiUrl = new URL(azureUserApiUrl);
     apiUrl.searchParams.append('slug', urlName);
