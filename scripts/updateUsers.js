@@ -12,7 +12,7 @@ const container = client.database(databaseId).container(containerId);
 async function updateUsers() {
   // Query to get first 100 users
   const querySpec = {
-    query: "SELECT * FROM c OFFSET 0 LIMIT 100"
+    query: "SELECT * FROM c OFFSET 300 LIMIT 30"
   };
 
   const { resources: users } = await container.items.query(querySpec).fetchAll();

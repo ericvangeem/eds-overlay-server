@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@azure/cosmos": "^4.3.0",
+    "@azure/storage-blob": "^12.27.0",
     "axios": "^1.9.0",
     "clipboardy": "^4.0.0",
     "dotenv": "^16.5.0",
