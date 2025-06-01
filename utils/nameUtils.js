@@ -1,7 +1,6 @@
 // Convert display name to URL-friendly format
 function toUrlFriendlyName(name) {
-  let baseString = user.name || user.id;
-  return baseString
+  return name
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/[\s_]+/g, '-')

@@ -2,6 +2,9 @@ const fs = require('fs');
 const axios = require('axios');
 const path = require('path');
 
+// Load environment variables from .env file if it exists
+require('dotenv').config();
+
 // Configuration
 const CONFIG = {
   // Number of users to sample from generated_users.json
@@ -20,7 +23,7 @@ const CONFIG = {
   requestTimeoutMs: 10000,
   
   // Whether to log detailed response information
-  verbose: true,
+  verbose: false,
   
   // File path to generated users
   usersFilePath: './generated_users.json',

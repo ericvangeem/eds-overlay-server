@@ -1,6 +1,5 @@
 const express = require('express');
 const axios = require('axios');
-const { toUrlFriendlyName } = require('./utils/nameUtils');
 const { fetchAndPopulateTemplate } = require('./utils/templateUtils');
 
 const azureUserApiCode = process.env.AZURE_USER_API_CODE || '';
