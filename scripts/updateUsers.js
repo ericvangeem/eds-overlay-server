@@ -9,12 +9,22 @@ const containerId = process.env.COSMOS_DB_CONTAINER_ID;
 const client = new CosmosClient({ endpoint, key });
 const container = client.database(databaseId).container(containerId);
 
-async function updateUsers() {
-  // Query to get first 100 users
-  const querySpec = {
-    query: "SELECT * FROM c OFFSET 300 LIMIT 30"
-  };
+// Query to get first 1000 users
+const querySpec = {
+  query: "SELECT * FROM c OFFSET 2000 LIMIT 6000"
+};
 
+async function printUserSlugs() {
+  const { resources: users } = await container.items.query(querySpec).fetchAll();
+  
+  console.log('📋 Printing user slugs:');
+  for (const user of users) {
+    console.log(`${user.slug || 'NO_SLUG'}`);
+  }
+  // console.log(`\nTotal users: ${users.length}`);
+}
+
+async function updateUsers() {
   const { resources: users } = await container.items.query(querySpec).fetchAll();
   
   for (const user of users) {
@@ -34,4 +44,11 @@ async function updateUsers() {
   console.log(`Completed updating ${users.length} users`);
 }
 
-updateUsers().catch(console.error); 
+// Check for print mode via command line argument
+const printMode = process.argv.includes('--print') || process.argv.includes('-p');
+
+if (printMode) {
+  printUserSlugs().catch(console.error);
+} else {
+  updateUsers().catch(console.error);
+} 
