@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const { fetchAndPopulateTemplate } = require('./utils/templateUtils');
+const { AEM_BASE_URL } = require('./constants');
 
 const azureUserApiCode = process.env.AZURE_USER_API_CODE || '';
 const azureUserApiUrl = `${process.env.AZURE_USER_API_URL || ''}${azureUserApiCode ? `?code=${azureUserApiCode}` : ''}`;
@@ -84,7 +85,7 @@ app.get('/people/:name', async (req, res) => {
     }
 
     // Fetch and populate template
-    const templateUrl = 'https://main--unch-providers--herodigital.aem.live/people/template';
+    const templateUrl = `${AEM_BASE_URL}/templates/person-detail`;
     const html = await fetchAndPopulateTemplate(templateUrl, { user });
     res.send(html);
 
