@@ -27,6 +27,9 @@ async function loadUsers() {
       user.slug = generateSlug(user.name || user.id);
       if (!user.id) user.id = crypto.randomUUID();
       
+      // Add lastBulkUpdate timestamp
+      user.lastBulkUpdate = new Date().toISOString();
+      
       // Use upsert to create or update the user
       await container.items.upsert(user);
       console.log(`✅ Upserted: ${user.name}`);

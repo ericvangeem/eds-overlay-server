@@ -14,9 +14,11 @@ html = html.replace(/(%7B%7B|{{)([^}%]+)(%7D%7D|}})/g, (match, openBrace, path, 
   return value !== undefined ? value : match;
 });
 
-    // Convert relative media URLs to absolute URLs
+    // Convert relative media URLs to absolute URLs and remove query parameters
     html = html.replace(/(src|srcset)="\.\/media_([^"]+)"/g, (match, attr, path) => {
-      return `${attr}="${AEM_BASE_URL}/media_${path}"`;
+      // Remove query parameters from the path
+      const pathWithoutQuery = path.split('?')[0];
+      return `${attr}="${AEM_BASE_URL}/media_${pathWithoutQuery}"`;
     });
     
     return html;

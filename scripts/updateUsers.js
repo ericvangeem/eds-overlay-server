@@ -11,7 +11,7 @@ const container = client.database(databaseId).container(containerId);
 
 // Query to get first 1000 users
 const querySpec = {
-  query: "SELECT * FROM c OFFSET 2000 LIMIT 6000"
+  query: "SELECT * FROM c OFFSET 0 LIMIT 100"
 };
 
 async function printUserSlugs() {
