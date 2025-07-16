@@ -20,23 +20,36 @@ function generateSlug(str) {
 }
 
 async function loadUsers() {
-  const users = JSON.parse(fs.readFileSync('./scripts/users.json', 'utf8'));
+  const users = JSON.parse(fs.readFileSync('./output/missing-users-2025-07-15T03-10-12-367Z.json', 'utf8'));
+  let upsertedCount = 0;
+  let failedCount = 0;
 
-  for (const user of users) {
+  console.log(`📊 Starting to process ${users.length} users...`);
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
     try {
-      user.slug = generateSlug(user.name || user.id);
+      // user.slug = generateSlug(user.name || user.id);
       if (!user.id) user.id = crypto.randomUUID();
       
       // Add lastBulkUpdate timestamp
-      user.lastBulkUpdate = new Date().toISOString();
+      user.lastBulkUpdate = new Date().toISOString(); 
       
       // Use upsert to create or update the user
       await container.items.upsert(user);
-      console.log(`✅ Upserted: ${user.name}`);
+      console.log(`✅ Upserted: ${user.name} (${i + 1}/${users.length})`);
+      upsertedCount++;
     } catch (err) {
-      console.error(`❌ Failed for ${user.name}: ${err.message}`);
+      console.error(`❌ Failed for ${user.name} (${i + 1}/${users.length}): ${err.message}`);
+      failedCount++;
     }
   }
+
+  console.log('\n📈 Final Statistics:');
+  console.log(`✅ Total upserted users: ${upsertedCount}`);
+  console.log(`❌ Total failed users: ${failedCount}`);
+  console.log(`📊 Total processed: ${upsertedCount + failedCount}`);
+  console.log(`🎯 Success rate: ${((upsertedCount / (upsertedCount + failedCount)) * 100).toFixed(2)}%`);
 }
 
 loadUsers();
